@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+#=========TASK 1===========================================
 class PrintRuby
   @@not_exception = [10, 20, 25]
   @@max_count = 30
@@ -28,34 +28,69 @@ class PrintRuby
     end
   end
 end
-#====================================================
-class PaintCircle
-  attr_accessor :symb, :diameter
-  def initialize(symb, diameter)
-    @symb = symb
-    @diameter = diameter
+#=========TASK 2===========================================
+class Circle
+  attr_accessor :radius
+  def initialize(radius)
+    @radius = radius
   end
 
-  def build_string
-    d = @diameter
-    arr1 = (1..d/2).to_a
-    arr2 = arr1.reverse
-    final_arr = arr1 + arr2
-    p arr1
-    p arr2
-    arr2.each do |ind|
-      # offset = (d/2 + ind).abs
-      # l = (@symb + (' ' * (offset)))
-      # line = l.reverse + l
-      line = @symb + (' ' * ind) + @symb
-      p line
+  def draw
+    diameter = @radius * 2
+    arr = []
+    diameter.times do
+      arr.push(' ' * diameter)
     end
-  end
+    l = arr.length - 1
+    arr.each_with_index do |_val, idx|
+      x = 0
+      y = 0
+      y = -l + idx
+      x = Math.sqrt(((@radius * @radius) - (y * y)).abs).round
+      arr[y][x] = '*'
+    end
+    part_up_right = arr[(l - l / 2), l]
+    part_down_left = part_up_right.reverse
+    part_right = part_up_right + part_down_left
+    part_left = part_right.map(&:reverse)
+    result = []
+    diameter.times do |i|
+      result.push(part_left[i] + part_right[i])
+    end
 
-  def paint_circle
-    p @diameter
-    p @symb.to_s
+    puts result[5].length
   end
 end
-print_ruby = PaintCircle.new('@', 30)
-print_ruby.build_string
+#=========TASK 3===========================================
+class Matrix
+  attr_accessor :count
+  def initialize(count)
+    @count = count
+  end
+
+  def create_matrix
+    arr = []
+    @count.times do
+      arr.push('0' * @count)
+    end
+    arr.map.with_index do |cell, i|
+      cell[i] = '1'
+      puts cell
+    end
+  end
+end
+class SearсhHash
+  def initialize()
+    @hash = { key1: {}, key2: {}, key3: { key4: 'str', key5: 'str2', key6: { key7: { key8: 1, key9: [2]} } }}
+    @target = :key9
+  end
+  def search(h, t)
+    # puts @hash.to_a
+    if h.has_key? t
+      puts t
+    end
+  end
+  
+end
+print_ruby = SearсhHash.new
+print_ruby.search
