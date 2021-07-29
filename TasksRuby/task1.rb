@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #=========TASK 1===========================================
 class PrintRuby
   @@not_exception = [10, 20, 25]
@@ -57,7 +58,6 @@ class Circle
     diameter.times do |i|
       result.push(part_left[i] + part_right[i])
     end
-
     puts result[5].length
   end
 end
@@ -79,18 +79,42 @@ class Matrix
     end
   end
 end
+#=========TASK 4===========================================
 class SearсhHash
-  def initialize()
-    @hash = { key1: {}, key2: {}, key3: { key4: 'str', key5: 'str2', key6: { key7: { key8: 1, key9: [2]} } }}
+  def initialize
+    @hash = { key1: {}, key2: {}, key3: { key4: 'str', key5: 'str2', key6: { key7: { key8: 1, key9: [2] } } } }
     @target = :key9
   end
-  def search(h, t)
-    # puts @hash.to_a
-    if h.has_key? t
-      puts t
+  @num_str = @target.to_s.gsub('key', '')
+  up_hash = {}
+  def search(h)
+    h.each do |key, val|
+      if key == @target
+        puts "I found #{key} with #{val}"
+      else
+        search(val) if val.is_a?(Hash)
+      end
     end
   end
-  
+
+  def run_search
+    search(@hash)
+  end
 end
-print_ruby = SearсhHash.new
-print_ruby.search
+#=========TASK 5===========================================
+class StringFormatize
+  def formatize(str, type_of_format)
+    case type_of_format
+      when :camel
+        puts str.upcase
+      when :underscore
+        "It's 6"
+      when :css
+        "It's either foo or bar"
+      else
+        puts 'Please enter a valid name for formatting: :camel, :underscore or :css'
+    end
+  end
+end
+print_ruby = StringFormatize.new
+print_ruby.formatize('i love ruby', :camel)
