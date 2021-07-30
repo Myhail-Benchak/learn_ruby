@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 #=========TASK 1===========================================
 class PrintRuby
   @@not_exception = [10, 20, 25]
@@ -117,7 +116,13 @@ class StringFormatize
   end
 end
 #=========TASK 6===========================================
+
 class TypeOfArray
+  # prepend Tasks
+  # def get_number_task
+  #   puts 1
+  # end
+
   def get_all(arr, type)
     new_arr = arr.flatten
     result_arr_of_types = []
@@ -130,3 +135,4 @@ end
 print_ruby = TypeOfArray.new
 array = [[1, 2, 3, 4, '1'], %w[2 5 10], [111, 222, 333, 444], %w[i love ruby], { key: 'value' }, [[[405, ['tttttttttttt']], ['text', 100_000]]]]
 print_ruby.get_all(array, Integer)
+
