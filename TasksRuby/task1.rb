@@ -80,7 +80,7 @@ class Matrix
   end
 end
 #=========TASK 4===========================================
-class SearсhHash
+class SearсhingHash
   def initialize
     @hash = { key1: {}, key2: {}, key3: { key4: 'str', key5: 'str2', key6: { key7: { key8: 1, key9: [2] } } } }
     @target = :key9
@@ -105,16 +105,28 @@ end
 class StringFormatize
   def formatize(str, type_of_format)
     case type_of_format
-      when :camel
-        puts str.upcase
-      when :underscore
-        "It's 6"
-      when :css
-        "It's either foo or bar"
-      else
-        puts 'Please enter a valid name for formatting: :camel, :underscore or :css'
+    when :camel
+      puts str.gsub(/\w+/, &:capitalize).delete('^a-zA-Z0-9')
+    when :underscore
+      puts str.gsub(/\s+/, '_')
+    when :css
+      puts str.gsub(/\s+/, '-')
+    else
+      puts 'Please enter a valid name for formating: :camel, :underscore or :css'
     end
   end
 end
-print_ruby = StringFormatize.new
-print_ruby.formatize('i love ruby', :camel)
+#=========TASK 6===========================================
+class TypeOfArray
+  def get_all(arr, type)
+    new_arr = arr.flatten
+    result_arr_of_types = []
+    new_arr.each do |element|
+      result_arr_of_types.push(element) if element.instance_of? type
+    end
+    p result_arr_of_types
+  end
+end
+print_ruby = TypeOfArray.new
+array = [[1, 2, 3, 4, '1'], %w[2 5 10], [111, 222, 333, 444], %w[i love ruby], { key: 'value' }, [[[405, ['tttttttttttt']], ['text', 100_000]]]]
+print_ruby.get_all(array, Integer)
