@@ -1,138 +1,157 @@
+# frozen_string_literal: true
+# coding: utf-8
 # https://gist.github.com/drkmen/4649f65aeefe06880b73364d81f45a71
 #=========TASK 1===========================================
 class PrintRuby
-  @@not_exception = [10, 20, 25]
-  @@max_count = 30
-
-  def compare_numbers?(num)
-    @@not_exception.map do |el_num|
-      el_num == num
-    end
-  end
-
-  def print_string(idx, max)
-    str1 = 'ruby'
-    int = idx % 5
-    if int == 0 && idx != max && compare_numbers?(idx)
-      puts idx.to_s + ' ' + str1
-    else
-      puts idx.to_s + ' <3 ' + str1
-    end
-  end
-
   def go_to_itr
-    count = 1
-    while count <= @@max_count
-      print_string(count, @@max_count)
-      count += 1
+    30.times do |index|
+      p [10, 20, 25].include?(index + 1) ? "ruby" : "<3 ruby"
     end
   end
 end
 #=========TASK 2===========================================
 class Circle
   attr_accessor :radius
+
   def initialize(radius)
     @radius = radius
+    @diameter = @radius * 2
   end
 
   def draw
-    diameter = @radius * 2
     arr = []
-    diameter.times do
-      arr.push(' ' * diameter)
+    @diameter.times do
+      arr.push(" " * @diameter)
     end
-    l = arr.length - 1
+    length_arr = arr.length - 1
     arr.each_with_index do |_val, idx|
       x = 0
       y = 0
-      y = -l + idx
+      y = -length_arr + idx
       x = Math.sqrt(((@radius * @radius) - (y * y)).abs).round
-      arr[y][x] = '*'
+      arr[y][x] = "*"
     end
-    part_up_right = arr[(l - l / 2), l]
+    part_up_right = arr[(length_arr - length_arr / 2), length_arr]
     part_down_left = part_up_right.reverse
     part_right = part_up_right + part_down_left
     part_left = part_right.map(&:reverse)
     result = []
-    diameter.times do |i|
+    @diameter.times do |i|
       result.push(part_left[i] + part_right[i])
     end
-    puts result[5].length
+    puts result
   end
 end
+
 #=========TASK 3===========================================
 class Matrix
-  attr_accessor :count
-  def initialize(count)
-    @count = count
-  end
-
-  def create_matrix
+  # Вывести в консоль матрицу с еденицами по диагонали. Размер задается с консоли
+  # Чтобы использовать нативный класс Matrix - нужна версия ruby >=2.6.5
+  def create_matrix(count)
     arr = []
-    @count.times do
-      arr.push('0' * @count)
+    count.times do
+      arr.push("0" * count)
     end
     arr.map.with_index do |cell, i|
-      cell[i] = '1'
+      cell[i] = "1"
       puts cell
     end
   end
 end
+
 #=========TASK 4===========================================
 class SearсhingHash
-  def initialize
-    @hash = { key1: {}, key2: {}, key3: { key4: 'str', key5: 'str2', key6: { key7: { key8: 1, key9: [2] } } } }
-    @target = :key9
-  end
-  @num_str = @target.to_s.gsub('key', '')
-  up_hash = {}
-  def search(h)
-    h.each do |key, val|
-      if key == @target
+  # Написать рекурсивный метод для поиска значения ключа key9 в хеше
+
+  def search(hash, fkey)
+    hash.each do |key, val|
+      if key == fkey
         puts "I found #{key} with #{val}"
       else
-        search(val) if val.is_a?(Hash)
+        search(val, fkey) if val.is_a?(Hash)
       end
     end
   end
-
-  def run_search
-    search(@hash)
-  end
 end
+
 #=========TASK 5===========================================
 class StringFormatize
+  # Написать метод, который принимает строку и приводит её в CamelCase, ruby_case_underscore и css-case
   def formatize(str, type_of_format)
     case type_of_format
     when :camel
-      puts str.gsub(/\w+/, &:capitalize).delete('^a-zA-Z0-9')
+      puts str.gsub(/\w+/, &:capitalize).delete("^a-zA-Z0-9")
     when :underscore
-      puts str.gsub(/\s+/, '_')
+      puts str.gsub(/\s+/, "_")
     when :css
-      puts str.gsub(/\s+/, '-')
+      puts str.gsub(/\s+/, "-")
     else
-      puts 'Please enter a valid name for formating: :camel, :underscore or :css'
+      puts "Please enter a valid name for formating: :camel, :underscore or :css"
     end
   end
 end
+
 #=========TASK 6===========================================
-
 class TypeOfArray
-  # prepend Tasks
-  # def get_number_task
-  #   puts 1
-  # end
-
+  # Написать метод, который принимает многомерный массив и тип данных, возвращает массив этих типов
   def get_all(arr, type)
-    new_arr = arr.flatten
     result_arr_of_types = []
-    new_arr.each do |element|
-      result_arr_of_types.push(element) if element.instance_of? type
+    if type == Array
+      arr.each do |element|
+        result_arr_of_types.push(element) if element.instance_of? type
+      end
+    else
+      arr.flatten.each do |element|
+        result_arr_of_types.push(element) if element.instance_of? type
+      end
     end
-    p result_arr_of_types
+    return result_arr_of_types
   end
 end
-print_ruby = TypeOfArray.new
-array = [[1, 2, 3, 4, '1'], %w[2 5 10], [111, 222, 333, 444], %w[i love ruby], { key: 'value' }, [[[405, ['tttttttttttt']], ['text', 100_000]]]]
-print_ruby.get_all(array, Integer)
 
+require "readline"
+
+while task_number = Readline.readline("Пожалуйста введите номер задания от 1 до 6 > ", true)
+  case task_number
+  when "1"
+    puts "Task" + task_number + ' Вывести в консоль, 30 раз "<3 ruby", каждый в новой строке, 10ый, 20ый, и 25ый вывод вывести просто "ruby"'
+    str = Readline.readline("Запустить Y/N? >> ", true)
+    case str
+    when 'Y'
+      print_ruby = PrintRuby.new
+      print_ruby.go_to_itr
+    end
+  when "2"
+    puts "Task" + task_number + ' Нарисовать в консоле круг, диаметр\радиус которого задается с консоли.'
+    r = Readline.readline("Введите радиус >> ", true)
+    print_ruby = Circle.new(r.to_i)
+    print_ruby.draw
+  when "3"
+    puts "Task" + task_number + " Вывести в консоль матрицу с еденицами по диагонали. Размер задается с консоли."
+    value_row_and_col = Readline.readline("Введите число для определения размера матрицы >> ", true)
+    print_ruby = Matrix.new
+    print_ruby.create_matrix(value_row_and_col.to_i)
+  when "4"
+    puts "Task" + task_number + " Написать рекурсивный метод для поиска значения ключа в хеше"
+    hash = { key1: {}, key2: {}, key3: { key4: "str", key5: "str2", key6: { key7: { key8: 1, key9: [2] } } } }
+    puts "Ваш хеш " + hash.to_s
+    search_key = Readline.readline("Введите ключ для поиска в правильном формате - key(номер) >> ", true)
+    print_ruby = SearсhingHash.new
+    print_ruby.search(hash, search_key.to_sym)
+  when "5"
+    puts "Task" + task_number + " Написать метод, который принимает строку и приводит её в CamelCase, ruby_case_underscore и css-case"
+    string_to_formatize = Readline.readline("Введите строку >> ", true)
+    type_of_format = Readline.readline("Введите тип форматирования одно из значений: camel, underscore или css >> ", true)
+    print_ruby = StringFormatize.new
+    print_ruby.formatize(string_to_formatize, type_of_format.to_sym)
+  when "6"
+    puts "Task" + task_number + " Написать метод, который принимает многомерный массив и тип данных, возвращает массив этих типов"
+    array = [[1, 2, 3, 4, "1"], %w[2 5 10], [111, 222, 333, 444], %w[i love ruby], { key: "value" }, [[405, ["tttttttttttt"]], ["text", 100_000]]]
+    puts 'Ваш массив: ' + array.to_s
+    type_of_data = Readline.readline("Введите тип данных с большой или мальнькой буквы >> ", true)
+    print_ruby = TypeOfArray.new
+    p print_ruby.get_all(array, Object.const_get(type_of_data.capitalize))
+  else
+    puts "Неверный или некорректный номер задания попробуйте еще раз"
+  end
+end
