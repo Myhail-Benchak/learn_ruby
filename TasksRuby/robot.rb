@@ -1,22 +1,7 @@
-require "matrix"
-DEFAULT_SIGN = 0
-POSITION_SIGN = 1
-ROUTE_SIGN = 2
-#==============
-
 module RouteOfObject
-  def init_route(route)
-    routes = { south: 0, nord: 0, west: 0, east: 0 }
-    case route
-    when "SOUTH"
-      routes[:south] = 1
-    when "NORD"
-      routes[:nord] = 1
-    when "WEST"
-      routes[:west] = 1
-    when "EAST"
-      routes[:east] = 1
-    end
+  def init_route(route_input)
+    routes = [{ name: "WEST", is_on: 0 }, { name: "SOUTH", is_on: 0 }, { name: "EAST", is_on: 0 }, { name: "NORD", is_on: 0 }]
+    routes.select { |route_items| route_items[:is_on] = 1 if route_items[:name] == route_input }
     return routes
   end
 end
@@ -25,14 +10,12 @@ class Area
   attr_accessor :count_col, :count_row
 
   def initialize(count_col = 5, count_row = 6)
-    @count_col = count_col
-    @count_row = count_row
+    @count_col = count_col.abs
+    @count_row = count_row.abs
   end
 
   def build_area
-    row = []
-    @count_col.times { row.push(0 * @count_row) }
-    area = Matrix.rows([row] * @count_row)
+    area = { x_length: @count_col, y_length: @count_row }
   end
 end
 
@@ -41,28 +24,111 @@ class ToyRobot
   attr_reader :area_for_walking
 
   def initialize(area_for_walking)
-    @data = { :x => 0, :y => 0, :f => '' }
-    @position = area_for_walking
-  end
-  def get_position(x_position, y_position)
-    @position[y_position, x_position] = POSITION_SIGN
-  end
-
-  def get_route(input_route)
-    f = init_route(route)
+    @data = { x: 0, y: 0, f: "" }
+    @area_for_walking = area_for_walking
   end
 
   def place(x_position, y_position, input_route)
-    current_position = get_position(x_position, y_position)
+    @data[:x] = x_position
+    @data[:y] = y_position
+    @data[:f] = init_route(input_route)
+  end
+
+  def to_left
+    is_now_index = find_route_index(@data[:f])
+    target_index = 0
+    if is_now_index >= (@data[:f].size - 1)
+      target_index = 0
+    else
+      target_index = is_now_index + 1
+    end
+    @data[:f][is_now_index][:is_on] = 0
+    @data[:f][target_index][:is_on] = 1
+  end
+
+  def to_right
+    is_now_index = find_route_index(@data[:f])
+    target_index = 0
+
+    if is_now_index <= 0
+      target_index = @data[:f].size - 1
+    else
+      target_index = is_now_index - 1
+    end
+    @data[:f][is_now_index][:is_on] = 0
+    @data[:f][target_index][:is_on] = 1
+  end
+
+  def move
+    route = get_route_string(@data[:f])
+    case route
+    when "WEST"
+      @data[:x] -= 1
+    when "SOUTH"
+      @data[:y] -= 1
+    when "EAST"
+      @data[:x] += 1
+    when "NORD"
+      @data[:y] += 1
+    end
+    if @data[:x] == -1 || @data[:y] == -1 || @data[:x] > (@area_for_walking[:x_length] - 1) || @data[:y] > (@area_for_walking[:y_length] - 1)
+      puts "OMG - this robot could fall and crash! But don't worry, this time I'll save his life!"
+    end
+    @data[:x] = 0 if @data[:x] == -1
+    @data[:y] = 0 if @data[:y] == -1
+    @data[:x] = (@area_for_walking[:x_length] - 1) if @data[:x] > (@area_for_walking[:x_length] - 1)
+    @data[:y] = (@area_for_walking[:y_length] - 1) if @data[:y] > (@area_for_walking[:y_length] - 1)
   end
 
   def report
-    @data[:x] = 
-   puts @data[:x]
+    x = @data[:x]
+    y = @data[:y]
+    f = get_route_string(@data[:f])
+    puts "->Output #{x}, #{y}, #{f}"
+  end
+
+  #=======Helpers==============
+  def find_route_index(arr)
+    arr.each { |item| return arr.find_index(item) if item[:is_on] == 1 }
+  end
+
+  def get_route_string(arr)
+    position = find_route_index(arr)
+    route = arr[position][:name]
+    return route
   end
 end
 
-my_area = Area.new(10, 15).build_area
+puts "Welcome to the best ToyRobot from Ruby!"
+puts 'Please enter size of table for robots walking - {max width X: integer}x{max length Y: integer}, or "Enter" for using default size (5x6) =>'
+AREA = gets.chomp
+my_area = {}
+if AREA.to_i == 0
+  my_area = Area.new().build_area
+else
+  coordinates = AREA.split("x")
+  my_area = Area.new(coordinates[0].to_i, coordinates[1].to_i).build_area
+end
 my_robot = ToyRobot.new(my_area)
-my_robot.report
-# my_robot.place(0, 5, 'NORD')
+puts "Ok, now your PLACE: 0, 0, underfined; Southwest of table"
+puts 'Please enter initial values of PLACE for your Robot: {X-position: integer} "Enter" {Y-position: integer} "Enter" {Robots route: SOUTH, WEST, EAST or NORD}=>'
+X_POSITION = gets.chomp.to_i
+Y_POSITION = gets.chomp.to_i
+ROUTE = gets.chomp
+my_robot.place(X_POSITION, Y_POSITION, ROUTE)
+puts "Great, now let's find out what your robot can do!"
+puts "Your robot can execute commands such as: to move - 'MOVE', to turn right - 'RIGHT', to turn left - 'LEFT', to find out the location - 'REPORT'"
+action = gets.chomp
+while action
+  case action
+  when "MOVE"
+    my_robot.move
+  when "RIGHT"
+    my_robot.to_right
+  when "LEFT"
+    my_robot.to_left
+  when "REPORT"
+    my_robot.report
+  end
+  action = gets.chomp
+end
