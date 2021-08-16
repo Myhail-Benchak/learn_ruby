@@ -26,11 +26,21 @@ class ToyRobot
   def initialize(area_for_walking)
     @data = { x: 0, y: 0, f: "" }
     @area_for_walking = area_for_walking
+    @max_position_x = @area_for_walking[:x_length] - 1
+    @max_position_y = @area_for_walking[:y_length] - 1
   end
 
   def place(x_position, y_position, input_route)
-    @data[:x] = x_position
-    @data[:y] = y_position
+    if x_position < @max_position_x
+      @data[:x] = x_position
+    else
+      @data[:x] = @max_position_x
+    end
+    if y_position < @max_position_y
+      @data[:y] = y_position
+    else
+      @data[:y] = @max_position_y
+    end
     @data[:f] = init_route(input_route)
   end
 
@@ -71,13 +81,13 @@ class ToyRobot
     when "NORD"
       @data[:y] += 1
     end
-    if @data[:x] == -1 || @data[:y] == -1 || @data[:x] > (@area_for_walking[:x_length] - 1) || @data[:y] > (@area_for_walking[:y_length] - 1)
+    if @data[:x] == -1 || @data[:y] == -1 || @data[:x] > @max_position_x || @data[:y] > @max_position_y
       puts "OMG - this robot could fall and crash! But don't worry, this time I'll save his life!"
     end
     @data[:x] = 0 if @data[:x] == -1
     @data[:y] = 0 if @data[:y] == -1
-    @data[:x] = (@area_for_walking[:x_length] - 1) if @data[:x] > (@area_for_walking[:x_length] - 1)
-    @data[:y] = (@area_for_walking[:y_length] - 1) if @data[:y] > (@area_for_walking[:y_length] - 1)
+    @data[:x] = @max_position_x if @data[:x] > @max_position_x
+    @data[:y] = @max_position_y if @data[:y] > @max_position_y
   end
 
   def report
@@ -111,6 +121,7 @@ else
 end
 my_robot = ToyRobot.new(my_area)
 puts "Ok, now your PLACE: 0, 0, underfined; Southwest of table"
+puts "NOTICE: If the starting position values ​​are larger than the table dimensions, the maximum table dimensions will be applied"
 puts 'Please enter initial values of PLACE for your Robot: {X-position: integer} "Enter" {Y-position: integer} "Enter" {Robots route: SOUTH, WEST, EAST or NORD}=>'
 X_POSITION = gets.chomp.to_i
 Y_POSITION = gets.chomp.to_i
