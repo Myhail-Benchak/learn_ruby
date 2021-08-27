@@ -7,7 +7,7 @@ module FileReader
       file_soccer_results = File.new(path_to_file, "r:UTF-8")
       res = file_soccer_results.readlines
       file_soccer_results.close
-      return res
+      res
     else
       puts "Файл не найден"
     end
@@ -21,12 +21,12 @@ class SoccerResults
     @file_path = file_path
   end
 
-  # Метод для получения индекса команды
+  # Method for getting the command index
   def get_index(arr_teams, target_team)
     arr_teams.index { |x| x[:title] == target_team }
   end
 
-  # Метод подсчета очков
+  # Scoring method
   def count_result(games, teams)
     games.each do |game|
       first_team = game.first.delete("^A-Za-z ").to_s.strip
@@ -45,7 +45,7 @@ class SoccerResults
     end
   end
 
-  # Метод вывода и сортировки команд по рейтинку
+  # Method of displaying and sorting commands by rating
   def sort_and_print(arr)
     arr.sort! { |x, y| x[:result] <=> y[:result] }.reverse!
     arr.each do |item|
@@ -54,21 +54,19 @@ class SoccerResults
   end
 
   def calculate_and_show
-    teams_array = []
-    pairs = []
-    # Чтение данных из файла
+    # Reading data from a file
     results = init_file(@file_path)
-    # Разбитие игр на пары
+    # Pairing games
     pairs = results.map do |pair|
       pair.split(", ")
       pair.tr("^A-Za-z, 0-9", "").split(", ")
     end
-    # Подготовка массива с полями команда и результат игр
+    # Preparing an array with fields command and result of games
     arr = results.map { |team| "#{team}" }.join(",").tr("^A-Za-z, ", "").split(",").map(&:strip).uniq
-    arr.each_with_index do |title, index|
-      teams_array[index] = { title: title, result: 0 }
+    teams_array = arr.map do |title|
+      { title: title, result: 0 }
     end
-    # Работа с результатами
+    # Working with results
     count_result(pairs, teams_array)
     sort_and_print(teams_array)
   end
