@@ -1,22 +1,26 @@
 current_path = File.dirname(__FILE__)
-file_path = current_path + "/data_soccer/soccer_games.txt"
+FILE_PATH_SOCCER = current_path + "/data_soccer/soccer_games.txt"
 
-if File.exist?(file_path)
-  # Чтение данных и файла
-  file_soccer_results = File.new(file_path, "r:UTF-8")
-  results = file_soccer_results.readlines
-  file_soccer_results.close
-  # Разбитие игр на пары
-  pairs = results.map do |pair|
-    pair.split(", ")
-    pair.tr("^A-Za-z, 0-9", "").split(", ")
+module FileReader
+  def init_file(path_to_file)
+    if File.exist?(path_to_file)
+      file_soccer_results = File.new(path_to_file, "r:UTF-8")
+      res = file_soccer_results.readlines
+      file_soccer_results.close
+      return res
+    else
+      puts "Файл не найден"
+    end
   end
-  # Подготовка массива с полями команда и результат игр
-  arr = results.map { |team| "#{team}" }.join(",").tr("^A-Za-z, ", "").split(",").map(&:strip).uniq
-  teams_array = []
-  arr.each_with_index do |title, index|
-    teams_array[index] = { title: title, result: 0 }
+end
+
+class SoccerResults
+  include FileReader
+
+  def initialize(file_path)
+    @file_path = file_path
   end
+
   # Метод для получения индекса команды
   def get_index(arr_teams, target_team)
     arr_teams.index { |x| x[:title] == target_team }
@@ -41,7 +45,7 @@ if File.exist?(file_path)
     end
   end
 
-  # Метод и сортировка команд по рейтинку
+  # Метод вывода и сортировки команд по рейтинку
   def sort_and_print(arr)
     arr.sort! { |x, y| x[:result] <=> y[:result] }.reverse!
     arr.each do |item|
@@ -49,9 +53,26 @@ if File.exist?(file_path)
     end
   end
 
-  # Работа с результатами
-  count_result(pairs, teams_array)
-  sort_and_print(teams_array)
-else
-  puts "Файл не найден"
+  def calculate_and_show
+    teams_array = []
+    pairs = []
+    # Чтение данных из файла
+    results = init_file(@file_path)
+    # Разбитие игр на пары
+    pairs = results.map do |pair|
+      pair.split(", ")
+      pair.tr("^A-Za-z, 0-9", "").split(", ")
+    end
+    # Подготовка массива с полями команда и результат игр
+    arr = results.map { |team| "#{team}" }.join(",").tr("^A-Za-z, ", "").split(",").map(&:strip).uniq
+    arr.each_with_index do |title, index|
+      teams_array[index] = { title: title, result: 0 }
+    end
+    # Работа с результатами
+    count_result(pairs, teams_array)
+    sort_and_print(teams_array)
+  end
 end
+
+seria_a_results = SoccerResults.new(FILE_PATH_SOCCER)
+seria_a_results.calculate_and_show
