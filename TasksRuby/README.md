@@ -1,34 +1,31 @@
 # learn_ruby
-Симулятор игрушечного робота
+Toy robot simulator
 
-Описание:
- - Приложение является симулятором движения игрушечного робота по прямоугольному столу с размерами X x Y клеток. Если размер не задан, задать размер 5х6 клеток.
- - На столе больше нет никаких препятствий.
- - Робот может свободно передвигаться по столу, но надо избежать его падения со стола. Любая комманда, которая может привести к падения робота со стола, должена быть предотвращена(пропущена), но любые последующие комманды, которые не приводят к падению робота, должны выполниться.
+Description:
+  - The application is a simulator of the movement of a toy robot on a rectangular table with dimensions of X x Y cells. If the size is not specified, set the size to 5x6 cells.
+  - There are no more obstacles on the table.
+  - The robot can move freely on the table, but it must be avoided from falling off the table. Any command that would cause the robot to fall off the table must be prevented (bypassed), but any subsequent commands that do not cause the robot to fall must be executed.
 
-Техническая сторона:
- - Создать приложение которое считывало комманды следующей формы:
+Technical side: 
+- Create an application that reads commands of the following form:
    PLACE X,Y,F
    MOVE
    LEFT
    RIGHT
    REPORT
 
- - Размер стола задается при инициализации приложения
- - PLACE задаст позицию робота на столе с координатами ячейки(X, Y) и сторону, в которую робот будет смотреть(F) - NORTH, SOUTH, EAST или WEST
- - Ячейка с координатами 0,0 должна быть разценена как самый крайний юго-западный угол (SOUTH WEST)
- - Самая первая валидная комманда для робота должна быть PLACE комманда. Приложение должно отклонить все комманды в последовательности пока комманда PLACE не будет выполнина
- - MOVE - подвинет робота на одну ячейку вперед по направлению, которому он сейчас смотрит.
- - LEFT и RIGHT - повернут робота на 90 градусов в соответствующем направлении без изменения его позиции
- - REPORT - выведет текущие координаты робота (X, Y) и его текущее направление (F). Вывод может быть в произвольной форме.
-
- - Робот, который не находится на столе, должен игнорировать комманды MOVE, LEFT, RIGHT и REPORT 
- - Ввод данных может быть как из файла так и из коммандной строки(на ваш выбор)
- - Разработчик должен предоставить тестовые данные для проверки.
-
-Ограничения:
- - Робот не должен упасть со стола во время движения. Это так же включает себя начальное положение робота.
- - Любая комманда, которая влечет за собой падение робота должна быть проигнорирована
+- The size of the table is set when the application is initialized
+- PLACE will set the position of the robot on the table with cell coordinates (X, Y) and the direction in which the robot will look (F)
+- NORTH, SOUTH, EAST or WEST - Cell with coordinates 0,0 must be regarded as the extreme southwestern corner (SOUTH WEST)
+- The very first valid command for the robot should be the PLACE command. The application must reject all commands in the sequence until the PLACE command is executed
+- MOVE - to move the robot one cell forward in the direction it is currently facing.
+- LEFT and RIGHT - will rotate the robot 90 degrees in the corresponding direction without changing its position
+- REPORT - will display the current coordinates of the robot (X, Y) and its current direction (F). The output can be in any form.
+- A robot that is not on the table must ignore the MOVE, LEFT, RIGHT and REPORT commands
+- Data input can be either from a file or from the command line (your choice)
+- The developer must provide test data for verification. Limitations:
+- The robot must not fall off the table while moving. This also includes the robot's starting position.
+- Any command that causes the robot to fall must be ignored
 
 Примеры Ввыода и Вывода:
 а)
@@ -52,7 +49,7 @@ MOVE
 REPORT
 ->Output: 3,3,NORTH
 
-CLI(command line interface), ООП Приветствуется.
+CLI(command line interface)
 
 
 ==================================soccer_exercise==========================================
