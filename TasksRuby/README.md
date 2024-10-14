@@ -27,7 +27,7 @@ Technical side:
 - The robot must not fall off the table while moving. This also includes the robot's starting position.
 - Any command that causes the robot to fall must be ignored
 
-Примеры Ввыода и Вывода:
+Examples of INPUT/OUTPUT:
 а)
 PLACE 0,0,NORTH
 MOVE
